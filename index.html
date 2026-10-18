@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Формулы ЕГЭ</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#6b7280;--ac:#4f46e5;--ok:#16a34a;--bad:#dc2626;--bd:#e3e6ee;--tk:#eef0fb;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141c;--card:#1c1f2b;--tx:#eceef5;--mu:#9aa1b2;--ac:#8b85ff;--ok:#4ade80;--bad:#f87171;--bd:#2c3040;--tk:#272b3d}}
+:root[data-theme="dark"]{--bg:#12141c;--card:#1c1f2b;--tx:#eceef5;--mu:#9aa1b2;--ac:#8b85ff;--ok:#4ade80;--bad:#f87171;--bd:#2c3040;--tk:#272b3d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 40px}
+nav{display:flex;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--mu);padding:10px;border-radius:9px;font-size:15px;font-weight:600}
+nav button.on{background:var(--ac);color:#fff}
+h2{font-size:14px;margin:18px 0 6px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center}
+h2 button{border:0;background:none;color:var(--ac);font-size:13px;font-weight:600}
+.row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.row.sel{border-color:var(--ac)}
+.cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--bd);flex:none;display:grid;place-items:center;color:#fff;font-size:14px}
+.row.sel .cb{background:var(--ac);border-color:var(--ac)}
+.nm{flex:1;min-width:0;font-size:15px}
+.fm{font-family:"Cambria Math",Cambria,Georgia,serif;font-size:17px;color:var(--ac);margin-top:3px}
+.pg{width:70px;flex:none;text-align:right;font-size:11px;color:var(--mu)}
+.bar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin-top:3px}
+.bar i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.bar i.full{background:var(--ok)}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;background:var(--ac);color:#fff;margin-top:10px}
+.btn.sec{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.btn:disabled{opacity:.4}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-top:12px}
+.q{font-size:13px;color:var(--mu)}
+.t{font-size:19px;font-weight:700;margin:2px 0 8px}
+.ans{min-height:64px;border:2px dashed var(--bd);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
+.ans.ok{border:2px solid var(--ok)}.ans.bad{border:2px solid var(--bad)}
+.tk{border:0;background:var(--tk);color:var(--tx);font-size:20px;padding:9px 13px;border-radius:10px;min-width:42px;font-family:"Cambria Math",Cambria,Georgia,serif}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.tk.used{opacity:.18;pointer-events:none}
+.fb{font-weight:700;margin:6px 0}.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.cor{font-size:22px;font-family:"Cambria Math",Cambria,Georgia,serif;margin:4px 0 10px}
+.stat{display:flex;justify-content:space-between;font-size:13px;color:var(--mu)}
+.empty{text-align:center;color:var(--mu);padding:40px 10px}
+textarea{width:100%;min-height:70px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);padding:8px;font:13px monospace;margin-top:8px}
+.mini{font-size:13px;color:var(--mu);margin:10px 0 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav><button id="n1" class="on">Формулы</button><button id="n2">Учить</button></nav>
+<div id="v"></div>
+</div>
+<script>
+const D=[
+["Механика","Скорость равномерного движения","v = s / t"],
+["Механика","Скорость при равноускоренном движении","v = v₀ + a · t"],
+["Механика","Путь при равноускоренном движении","s = v₀ · t + a · t² / 2"],
+["Механика","Центростремительное ускорение","a = v² / R"],
+["Механика","Второй закон Ньютона","F = m · a"],
+["Механика","Закон всемирного тяготения","F = G · m₁ · m₂ / R²"],
+["Механика","Сила тяжести","F = m · g"],
+["Механика","Закон Гука","F = k · x"],
+["Механика","Сила трения скольжения","F = μ · N"],
+["Механика","Импульс тела","p = m · v"],
+["Механика","Кинетическая энергия","E = m · v² / 2"],
+["Механика","Потенциальная энергия в поле тяжести","E = m · g · h"],
+["Механика","Механическая работа","A = F · s · cos α"],
+["Механика","Мощность","N = A / t"],
+["Механика","Давление","p = F / S"],
+["Механика","Сила Архимеда","F = ρ · g · V"],
+["МКТ и термодинамика","Уравнение Менделеева — Клапейрона","p · V = ν · R · T"],
+["МКТ и термодинамика","Основное уравнение МКТ (через концентрацию)","p = n · k · T"],
+["МКТ и термодинамика","Средняя кинетическая энергия молекул","E = 3 / 2 · k · T"],
+["МКТ и термодинамика","Первый закон термодинамики","Q = ΔU + A"],
+["МКТ и термодинамика","Количество теплоты при нагревании","Q = c · m · Δt"],
+["МКТ и термодинамика","КПД тепловой машины","η = ( Q₁ − Q₂ ) / Q₁"],
+["Электричество","Закон Кулона","F = k · q₁ · q₂ / r²"],
+["Электричество","Закон Ома для участка цепи","I = U / R"],
+["Электричество","Мощность электрического тока","P = U · I"],
+["Электричество","Закон Джоуля — Ленца","Q = I² · R · t"],
+["Электричество","Сопротивление проводника","R = ρ · l / S"],
+["Электричество","Электроёмкость конденсатора","C = q / U"],
+["Электричество","Энергия конденсатора","W = C · U² / 2"],
+["Магнетизм","Сила Ампера","F = B · I · l · sin α"],
+["Магнетизм","Сила Лоренца","F = q · v · B · sin α"],
+["Магнетизм","Магнитный поток","Φ = B · S · cos α"],
+["Магнетизм","ЭДС индукции","ε = − ΔΦ / Δt"],
+["Колебания и оптика","Период математического маятника","T = 2 · π · √ ( l / g )"],
+["Колебания и оптика","Длина волны","λ = v · T"],
+["Колебания и оптика","Закон преломления света","n₁ · sin α = n₂ · sin β"],
+["Колебания и оптика","Формула тонкой линзы","1 / F = 1 / d + 1 / f"],
+["Квантовая физика","Энергия фотона","E = h · ν"],
+["Квантовая физика","Уравнение Эйнштейна для фотоэффекта","h · ν = A + Eк"],
+["Механика","Закон сохранения импульса (упругий удар)","m₁ · v₁ + m₂ · v₂ = m₁ · u₁ + m₂ · u₂"],
+["Механика","Закон сохранения импульса (неупругий удар)","m₁ · v₁ + m₂ · v₂ = ( m₁ + m₂ ) · u"],
+["Механика","Закон сохранения механической энергии","m · v₁² / 2 + m · g · h₁ = m · v₂² / 2 + m · g · h₂"],
+["Механика","Теорема о кинетической энергии","A = Eк₂ − Eк₁"],
+["Механика","Импульс силы и изменение импульса","F · Δt = Δp"],
+["Механика","Потенциальная энергия пружины","E = k · x² / 2"],
+["Механика","Ускорение","a = ( v − v₀ ) / t"],
+["Механика","Путь без времени","s = ( v² − v₀² ) / ( 2 · a )"],
+["Механика","Высота при свободном падении","h = g · t² / 2"],
+["Механика","Закон сложения скоростей","v = v₁ + v₂"],
+["Механика","Линейная скорость при движении по окружности","v = 2 · π · R / T"],
+["Механика","Период и частота","T = 1 / ν"],
+["Механика","Правило моментов (равновесие рычага)","F₁ · l₁ = F₂ · l₂"],
+["Механика","Давление жидкости на глубине","p = ρ · g · h"],
+["Механика","КПД механизма","η = Aп / Aз"],
+["Механика","Уравнение гармонических колебаний","x = A · cos ( ω · t )"],
+["Механика","Период пружинного маятника","T = 2 · π · √ ( m / k )"],
+["МКТ и термодинамика","Закон Бойля — Мариотта (T = const)","p₁ · V₁ = p₂ · V₂"],
+["МКТ и термодинамика","Закон Гей-Люссака (p = const)","V₁ / T₁ = V₂ / T₂"],
+["МКТ и термодинамика","Закон Шарля (V = const)","p₁ / T₁ = p₂ / T₂"],
+["МКТ и термодинамика","Объединённый газовый закон","p₁ · V₁ / T₁ = p₂ · V₂ / T₂"],
+["МКТ и термодинамика","Внутренняя энергия одноатомного газа","U = 3 / 2 · ν · R · T"],
+["МКТ и термодинамика","Работа газа при изобарном процессе","A = p · ΔV"],
+["МКТ и термодинамика","Уравнение теплового баланса","Q₁ + Q₂ = 0"],
+["МКТ и термодинамика","Количество теплоты при плавлении","Q = λ · m"],
+["МКТ и термодинамика","Количество теплоты при парообразовании","Q = L · m"],
+["МКТ и термодинамика","Количество теплоты при сгорании топлива","Q = q · m"],
+["МКТ и термодинамика","Количество вещества через число частиц","ν = N / Nₐ"],
+["МКТ и термодинамика","КПД идеальной тепловой машины (цикл Карно)","η = ( T₁ − T₂ ) / T₁"],
+["Электричество","Закон сохранения электрического заряда","q₁ + q₂ = q₁′ + q₂′"],
+["Электричество","Сила тока","I = q / t"],
+["Электричество","Напряжённость поля точечного заряда","E = k · q / r²"],
+["Электричество","Напряжённость через силу","E = F / q"],
+["Электричество","Напряжённость однородного поля","E = U / d"],
+["Электричество","Потенциал поля точечного заряда","φ = k · q / r"],
+["Электричество","Работа электрического поля","A = q · U"],
+["Электричество","Работа электрического тока","A = U · I · t"],
+["Электричество","Последовательное соединение резисторов","R = R₁ + R₂"],
+["Электричество","Параллельное соединение резисторов","1 / R = 1 / R₁ + 1 / R₂"],
+["Электричество","Закон Ома для полной цепи","I = ε / ( R + r )"],
+["Электричество","Ёмкость плоского конденсатора","C = ε₀ · ε · S / d"],
+["Магнетизм","ЭДС в движущемся проводнике","ε = B · v · l · sin α"],
+["Магнетизм","ЭДС самоиндукции","ε = − L · ΔI / Δt"],
+["Магнетизм","Энергия магнитного поля катушки","W = L · I² / 2"],
+["Магнетизм","Радиус траектории заряда в магнитном поле","R = m · v / ( q · B )"],
+["Колебания и оптика","Формула Томсона (период колебаний в контуре)","T = 2 · π · √ ( L · C )"],
+["Колебания и оптика","Связь длины волны и частоты","λ = v / ν"],
+["Колебания и оптика","Закон отражения света","α = β"],
+["Колебания и оптика","Абсолютный показатель преломления","n = c / v"],
+["Колебания и оптика","Оптическая сила линзы","D = 1 / F"],
+["Колебания и оптика","Увеличение линзы","Γ = f / d"],
+["Колебания и оптика","Дифракционная решётка","d · sin φ = k · λ"],
+["Квантовая физика","Энергия фотона через длину волны","E = h · c / λ"],
+["Квантовая физика","Импульс фотона","p = h / λ"],
+["Квантовая физика","Второй постулат Бора","h · ν = Eₘ − Eₙ"],
+["Ядерная физика","Закон радиоактивного распада","N = N₀ · 2 ^ ( − t / T )"],
+["Ядерная физика","Энергия связи ядра","E = Δm · c²"],
+["Ядерная физика","Связь массы и энергии","E = m · c²"]
+];
+const MAX=5;
+let st={sel:[],lvl:{}};
+try{const s=JSON.parse(localStorage.getItem("fe_st")||"null");if(s&&s.sel)st=s}catch(e){}
+const save=()=>{try{localStorage.setItem("fe_st",JSON.stringify(st))}catch(e){}};
+const $=id=>document.getElementById(id);
+const lv=i=>st.lvl[i]||0;
+let tab=1,shown=[],ask=false,msg="",bkText="",undoSt=null,cur=null,bank=[],ans=[],done=false,last=-1,res=null;
+const cats=[...new Set(D.map(d=>d[0]))];
+const varPool=[...new Set(D.flatMap(d=>d[2].split(" ")).filter(t=>/[A-Za-zΑ-ωΔΦ]/.test(t)))];
+
+function norm(f){
+  const sides=f.split(" = ").map(s=>{
+    const t=s.split(" ").filter(x=>x!=="·");
+    if(t.some(x=>"/+−(".includes(x)))return t.join(" ");
+    const u=[];
+    for(let k=0;k<t.length;k++){
+      if((t[k]==="sin"||t[k]==="cos")&&k+1<t.length){u.push(t[k]+" "+t[k+1]);k++}
+      else u.push(t[k]);
+    }
+    return u.sort().join(" ");
+  });
+  return sides.sort().join(" = ");
+}
+
+function bar(i){const l=lv(i);return `<div class="bar"><i class="${l>=MAX?"full":""}" style="width:${l/MAX*100}%"></i></div>`}
+
+function renderList(){
+  let h=`<button class="btn" id="go" ${st.sel.length?"":"disabled"}>Учить выбранные (${st.sel.length})</button>`;
+  cats.forEach(c=>{
+    const ids=D.map((d,i)=>d[0]===c?i:-1).filter(i=>i>=0);
+    const all=ids.every(i=>st.sel.includes(i));
+    const sh=shown.includes(c);
+    h+=`<h2>${c}<span style="display:flex;gap:14px"><button data-show="${c}">${sh?"Скрыть формулы":"Показать формулы"}</button><button data-cat="${c}">${all?"Снять все":"Выбрать все"}</button></span></h2>`;
+    ids.forEach(i=>{
+      const on=st.sel.includes(i);
+      h+=`<div class="row ${on?"sel":""}" data-id="${i}"><div class="cb">${on?"✓":""}</div><div class="nm">${D[i][1]}${sh?`<div class="fm">${D[i][2]}</div>`:""}</div><div class="pg">${lv(i)>=MAX?"выучена":lv(i)+" из "+MAX}${bar(i)}</div></div>`;
+    });
+  });
+  h+=ask?`<div class="card"><div class="t">Сбросить весь прогресс?</div><button class="btn" id="ryes" style="background:var(--bad)">Да, сбросить</button><button class="btn sec" id="rno">Отмена</button></div>`:`<button class="btn sec" id="rst">Сбросить весь прогресс</button>`;
+  if(getUndo())h+=`<button class="btn sec" id="undo">Вернуть прогресс до последнего сброса</button>`;
+  h+=`<h2>Резервная копия</h2><div class="card" style="margin-top:0"><div class="q">Получите код и сохраните его (например, в заметках). Чтобы вернуть прогресс, вставьте код в поле и нажмите «Загрузить».</div><textarea id="bk" placeholder="Код прогресса">${bkText.replace(/</g,"&lt;")}</textarea><button class="btn sec" id="bget">Получить код прогресса</button><button class="btn sec" id="bset">Загрузить из поля</button>${msg?`<div class="fb">${msg}</div>`:""}</div>`;
+  $("v").innerHTML=h;
+}
+
+function pick(){
+  const pool=st.sel.filter(i=>i!==last);
+  const p=pool.length?pool:st.sel;
+  const w=p.map(i=>MAX+1-lv(i));
+  let r=Math.random()*w.reduce((a,b)=>a+b,0),k=0;
+  while(r>w[k]&&k<p.length-1){r-=w[k];k++}
+  cur=p[k];last=cur;
+  const toks=D[cur][2].split(" ");
+  const extra=varPool.filter(t=>!toks.includes(t)).sort(()=>Math.random()-.5).slice(0,2);
+  bank=toks.concat(extra).map((t,i)=>({t,i})).sort(()=>Math.random()-.5);
+  ans=[];done=false;res=null;
+}
+
+function renderStudy(){
+  if(!st.sel.length){$("v").innerHTML=`<div class="empty">Сначала выберите формулы на вкладке «Формулы».</div>`;return}
+  if(cur===null||!st.sel.includes(cur))pick();
+  const mastered=st.sel.filter(i=>lv(i)>=MAX).length;
+  const cls=res===null?"":res?"ok":"bad";
+  let h=`<div class="card"><div class="stat"><span>Выучено: ${mastered} из ${st.sel.length}</span><span>Уровень: ${lv(cur)} из ${MAX}</span></div>${bar(cur)}
+  <div class="q" style="margin-top:14px">Составьте формулу:</div><div class="t">${D[cur][1]}</div>
+  <div class="ans ${cls}" id="ans">${ans.map(k=>`<button class="tk" data-rm="${k}" ${done?"disabled":""}>${bank.find(b=>b.i===k).t}</button>`).join("")||`<span class="q">Нажимайте на символы ниже</span>`}</div>`;
+  if(done){
+    h+=`<div class="fb ${res?"ok":"bad"}">${res?"Верно!":"Неверно. Правильная формула:"}</div>${res?"":`<div class="cor">${D[cur][2]}</div>`}<button class="btn" id="nx">Дальше</button>`;
+  }else{
+    h+=`<div class="bank">${bank.map(b=>`<button class="tk ${ans.includes(b.i)?"used":""}" data-add="${b.i}">${b.t}</button>`).join("")}</div>
+    <button class="btn" id="chk" ${ans.length?"":"disabled"}>Проверить</button>
+    <button class="btn sec" id="clr">Очистить</button><button class="btn sec" id="skp">Не помню — показать ответ</button>`;
+  }
+  h+=`</div><p class="mini">Знак · ставить необязательно. Лишние символы в наборе — отвлекающие. Редкие формулы выпадают чаще, когда уровень низкий.</p>`;
+  $("v").innerHTML=h;
+}
+
+function finish(ok){
+  done=true;res=ok;
+  st.lvl[cur]=ok?Math.min(MAX,lv(cur)+1):Math.max(0,lv(cur)-1);
+  save();renderStudy();
+}
+function check(){
+  const f=ans.map(k=>bank.find(b=>b.i===k).t).join(" ");
+  finish(norm(f)===norm(D[cur][2]));
+}
+
+function render(){
+  $("n1").className=tab===1?"on":"";$("n2").className=tab===2?"on":"";
+  tab===1?renderList():renderStudy();
+}
+
+$("n1").onclick=()=>{tab=1;render()};
+$("n2").onclick=()=>{tab=2;render()};
+$("v").addEventListener("input",e=>{if(e.target.id==="bk")bkText=e.target.value});
+function backup(){undoSt=JSON.stringify(st);try{localStorage.setItem("fe_bk",undoSt)}catch(e){}}
+function getUndo(){if(undoSt)return undoSt;try{return localStorage.getItem("fe_bk")}catch(e){return null}}
+$("v").addEventListener("click",e=>{
+  const t=e.target.closest("button,.row");if(!t)return;
+  const d=t.dataset;
+  if(t.id==="go"){tab=2;cur=null;render();return}
+  if(t.id==="rst"){ask=true;msg="";render();return}
+  if(t.id==="rno"){ask=false;render();return}
+  if(t.id==="ryes"){backup();st.lvl={};save();ask=false;cur=null;msg="Прогресс сброшен. Его можно вернуть кнопкой выше.";render();return}
+  if(t.id==="undo"){try{const o=JSON.parse(getUndo());if(o&&Array.isArray(o.sel)&&o.lvl){st=o;save();cur=null;msg="Прогресс возвращён."}}catch(err){msg="Не удалось вернуть прогресс."}render();return}
+  if(t.id==="bget"){bkText="FE1:"+btoa(JSON.stringify(st));msg="Код готов. Скопируйте его и сохраните.";render();const a=$("bk");if(a){a.focus();a.select()}try{navigator.clipboard.writeText(bkText)}catch(err){}return}
+  if(t.id==="bset"){try{const o=JSON.parse(atob(bkText.trim().replace(/^FE1:/,"")));if(!o||!Array.isArray(o.sel)||typeof o.lvl!=="object")throw 0;backup();st={sel:o.sel.filter(i=>Number.isInteger(i)&&i<D.length),lvl:o.lvl};save();cur=null;msg="Прогресс загружен."}catch(err){msg="Код не подходит. Проверьте, что скопировали его целиком."}render();return}
+  if(d.show){shown=shown.includes(d.show)?shown.filter(x=>x!==d.show):shown.concat(d.show);renderList();return}
+  if(d.cat){
+    const ids=D.map((x,i)=>x[0]===d.cat?i:-1).filter(i=>i>=0);
+    const all=ids.every(i=>st.sel.includes(i));
+    st.sel=all?st.sel.filter(i=>!ids.includes(i)):[...new Set(st.sel.concat(ids))];
+    save();render();return;
+  }
+  if(d.id!==undefined){
+    const i=+d.id;
+    st.sel=st.sel.includes(i)?st.sel.filter(x=>x!==i):st.sel.concat(i);
+    save();render();return;
+  }
+  if(d.add!==undefined){ans.push(+d.add);renderStudy();return}
+  if(d.rm!==undefined){ans=ans.filter(k=>k!==+d.rm);renderStudy();return}
+  if(t.id==="chk")check();
+  if(t.id==="clr"){ans=[];renderStudy()}
+  if(t.id==="skp")finish(false);
+  if(t.id==="nx"){pick();renderStudy()}
+});
+render();
+</script>
+</body>
+</html>
