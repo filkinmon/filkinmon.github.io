@@ -50,6 +50,10 @@ h2 button{border:0;background:none;color:var(--ac);font-size:13px;font-weight:60
 .stat{display:flex;justify-content:space-between;font-size:13px;color:var(--mu)}
 .empty{text-align:center;color:var(--mu);padding:40px 10px}
 textarea{width:100%;min-height:70px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);padding:8px;font:13px monospace;margin-top:8px}
+.kb{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:12px 0}
+.key{border:0;background:var(--tk);color:var(--tx);font-size:17px;padding:9px 0;border-radius:8px;font-family:"Cambria Math",Cambria,Georgia,serif;min-width:0}
+.key.ctl{background:var(--bd)}.key.on{background:var(--ac);color:#fff}
+.typed{font-size:22px;font-family:"Cambria Math",Cambria,Georgia,serif;word-break:break-all}
 .mini{font-size:13px;color:var(--mu);margin:10px 0 0;text-align:center}
 </style>
 </head>
@@ -279,11 +283,52 @@ try{const s=JSON.parse(localStorage.getItem("fe_st")||"null");if(s&&s.sel)st=s}c
 const save=()=>{try{localStorage.setItem("fe_st",JSON.stringify(st))}catch(e){}};
 const $=id=>document.getElementById(id);
 const lv=i=>st.lvl[i]||0;
-let tab=1,shown=[],leg=false,ask=false,msg="",bkText="",undoSt=null,cur=null,bank=[],ans=[],done=false,last=-1,res=null;
+let tab=1,shown=[],adv=false,ty=[],up=false,leg=false,ask=false,msg="",bkText="",undoSt=null,cur=null,bank=[],ans=[],done=false,last=-1,res=null;
 const cats=[...new Set(D.map(d=>d[0]))];
 const varPool=[...new Set(D.flatMap(d=>d[2].split(" ")).filter(t=>/[A-Za-zΑ-ωΔΦ]/.test(t)))];
 
+const TK=/sin|cos|\d+(?:[.,]\d+)?|Δ?[A-Za-zΑ-Ωα-ω][кпз]?[₀-₉ₐₘₙ²³′]*|[=+−\/()^√·]/g;
+function toks(s){return s.replace(/\s+/g,"").replace(/[-–—]/g,"−").replace(/\*/g,"·").match(TK)||[]}
+function side(t){
+  t=t.filter(x=>x!=="("&&x!==")"&&x!=="·");
+  const u=[];
+  for(let k=0;k<t.length;k++){
+    if((t[k]==="sin"||t[k]==="cos")&&k+1<t.length){u.push(t[k]+" "+t[k+1]);k++}
+    else u.push(t[k]);
+  }
+  const terms=[];let cur={s:"+",t:[]};
+  u.forEach(x=>{
+    if(x==="+"||x==="−"){if(cur.t.length)terms.push(cur);cur={s:x,t:[]}}
+    else cur.t.push(x);
+  });
+  terms.push(cur);
+  return terms.map(c=>{
+    const g=[[]];
+    c.t.forEach(x=>x==="/"?g.push([]):g[g.length-1].push(x));
+    const gs=g.map(a=>a.slice().sort().join(" "));
+    return c.s+" "+gs[0]+gs.slice(1).sort().map(x=>" / "+x).join("");
+  }).sort().join(" ");
+}
 function norm(f){
+  const sides=[[]];
+  toks(f).forEach(x=>x==="="?sides.push([]):sides[sides.length-1].push(x));
+  return sides.map(side).sort().join(" = ");
+}
+const LAT="abcdefghijklmnopqrstuvwxyz".split("");
+const GRK="αβγδεηθλμνπρστφωΔΦΓΩ".split("");
+function kbHtml(){
+  const k=c=>`<button class="key" data-k="${c}">${c}</button>`;
+  let h="";
+  "0123456789".split("").forEach(c=>h+=k(c));
+  ["=","+","−","·","/","(",")","^","√","′"].forEach(c=>h+=k(c));
+  ["₀","₁","₂","₃","₄","²","³","ₐ","ₘ","ₙ"].forEach(c=>h+=k(c));
+  LAT.forEach(c=>h+=k(up?c.toUpperCase():c));
+  GRK.forEach(c=>h+=k(c));
+  ["sin","cos","к","п","з"].forEach(c=>h+=k(c));
+  h+=`<button class="key ctl ${up?"on":""}" id="shf">⇧</button><button class="key ctl" id="bks" style="grid-column:span 2">⌫</button>`;
+  return h;
+}
+function normOld(f){
   const sides=f.split(" = ").map(s=>{
     const t=s.split(" ").filter(x=>x!=="·");
     if(t.some(x=>"/+−(".includes(x)))return t.join(" ");
@@ -300,7 +345,7 @@ function norm(f){
 function bar(i){const l=lv(i);return `<div class="bar"><i class="${l>=MAX?"full":""}" style="width:${l/MAX*100}%"></i></div>`}
 
 function renderList(){
-  let h=`<button class="btn" id="go" ${st.sel.length?"":"disabled"}>Учить выбранные (${st.sel.length})</button>`;
+  let h=`<button class="btn" id="go" ${st.sel.length?"":"disabled"}>Учить выбранные (${st.sel.length})</button><button class="btn sec" id="goa" ${st.sel.length?"":"disabled"}>Учить углублённо (${st.sel.length})</button>`;
   cats.forEach(c=>{
     const ids=D.map((d,i)=>d[0]===c?i:-1).filter(i=>i>=0);
     const all=ids.every(i=>st.sel.includes(i));
@@ -327,7 +372,7 @@ function pick(){
   const toks=D[cur][2].split(" ");
   const extra=varPool.filter(t=>!toks.includes(t)).sort(()=>Math.random()-.5).slice(0,2);
   bank=toks.concat(extra).map((t,i)=>({t,i})).sort(()=>Math.random()-.5);
-  ans=[];done=false;res=null;leg=false;
+  ans=[];done=false;res=null;leg=false;ty=[];up=false;
 }
 
 function renderStudy(){
@@ -337,15 +382,15 @@ function renderStudy(){
   const cls=res===null?"":res?"ok":"bad";
   let h=`<div class="card"><div class="stat"><span>Выучено: ${mastered} из ${st.sel.length}</span><span>Уровень: ${lv(cur)} из ${MAX}</span></div>${bar(cur)}
   <div class="q" style="margin-top:14px">Составьте формулу:</div><div class="t">${D[cur][1]}</div>
-  <div class="ans ${cls}" id="ans">${ans.map(k=>`<button class="tk" data-rm="${k}" ${done?"disabled":""}>${bank.find(b=>b.i===k).t}</button>`).join("")||`<span class="q">Нажимайте на символы ниже</span>`}</div>${leg||done?`<div class="lg">${L[cur]||""}</div>`:""}`;
+  <div class="ans ${cls}" id="ans">${adv?`<span class="typed">${ty.join("")||`<span class="q">Вводите формулу клавиатурой ниже</span>`}</span>`:ans.map(k=>`<button class="tk" data-rm="${k}" ${done?"disabled":""}>${bank.find(b=>b.i===k).t}</button>`).join("")||`<span class="q">Нажимайте на символы ниже</span>`}</div>${leg||done?`<div class="lg">${L[cur]||""}</div>`:""}`;
   if(done){
     h+=`<div class="fb ${res?"ok":"bad"}">${res?"Верно!":"Неверно. Правильная формула:"}</div>${res?"":`<div class="cor">${D[cur][2]}</div>`}<button class="btn" id="nx">Дальше</button>`;
   }else{
-    h+=`<div class="bank">${bank.map(b=>`<button class="tk ${ans.includes(b.i)?"used":""}" data-add="${b.i}">${b.t}</button>`).join("")}</div>
-    <button class="btn" id="chk" ${ans.length?"":"disabled"}>Проверить</button>
+    h+=`<div class="${adv?"kb":"bank"}">${adv?kbHtml():bank.map(b=>`<button class="tk ${ans.includes(b.i)?"used":""}" data-add="${b.i}">${b.t}</button>`).join("")}</div>
+    <button class="btn" id="chk" ${(adv?ty.length:ans.length)?"":"disabled"}>Проверить</button>
     <button class="btn sec" id="lgb">${leg?"Скрыть значения букв":"Что значат буквы"}</button><button class="btn sec" id="clr">Очистить</button><button class="btn sec" id="skp">Не помню — показать ответ</button>`;
   }
-  h+=`</div><p class="mini">Знак · ставить необязательно. Лишние символы в наборе — отвлекающие. Редкие формулы выпадают чаще, когда уровень низкий.</p>`;
+  h+=`<button class="btn sec" id="swm">${adv?"Перейти к обычному режиму":"Перейти к углублённому режиму"}</button></div><p class="mini">${adv?"Углублённый режим: набирайте формулу сами. Скобки и знак · ставить необязательно, порядок множителей не важен. Буквы с индексами: сначала буква, потом «₁», «₂» и т. д. Заглавная буква: кнопка ⇧.":"Скобки и знак · ставить необязательно, порядок множителей не важен. Лишние символы в наборе — отвлекающие. Редкие формулы выпадают чаще, когда уровень низкий."}</p>`;
   $("v").innerHTML=h;
 }
 
@@ -355,7 +400,7 @@ function finish(ok){
   save();renderStudy();
 }
 function check(){
-  const f=ans.map(k=>bank.find(b=>b.i===k).t).join(" ");
+  const f=adv?ty.join(""):ans.map(k=>bank.find(b=>b.i===k).t).join(" ");
   finish(norm(f)===norm(D[cur][2]));
 }
 
@@ -372,7 +417,8 @@ function getUndo(){if(undoSt)return undoSt;try{return localStorage.getItem("fe_b
 $("v").addEventListener("click",e=>{
   const t=e.target.closest("button,.row");if(!t)return;
   const d=t.dataset;
-  if(t.id==="go"){tab=2;cur=null;render();return}
+  if(t.id==="go"){adv=false;tab=2;cur=null;render();return}
+  if(t.id==="goa"){adv=true;tab=2;cur=null;render();return}
   if(t.id==="rst"){ask=true;msg="";render();return}
   if(t.id==="rno"){ask=false;render();return}
   if(t.id==="ryes"){backup();st.lvl={};save();ask=false;cur=null;msg="Прогресс сброшен. Его можно вернуть кнопкой выше.";render();return}
@@ -391,10 +437,14 @@ $("v").addEventListener("click",e=>{
     st.sel=st.sel.includes(i)?st.sel.filter(x=>x!==i):st.sel.concat(i);
     save();render();return;
   }
+  if(d.k!==undefined){if(done)return;ty.push(d.k);up=false;renderStudy();return}
+  if(t.id==="shf"){up=!up;renderStudy();return}
+  if(t.id==="bks"){ty.pop();renderStudy();return}
+  if(t.id==="swm"){adv=!adv;cur=null;renderStudy();return}
   if(d.add!==undefined){ans.push(+d.add);renderStudy();return}
   if(d.rm!==undefined){ans=ans.filter(k=>k!==+d.rm);renderStudy();return}
   if(t.id==="chk")check();
-  if(t.id==="clr"){ans=[];renderStudy()}
+  if(t.id==="clr"){ans=[];ty=[];renderStudy()}
   if(t.id==="lgb"){leg=!leg;renderStudy()}
   if(t.id==="skp")finish(false);
   if(t.id==="nx"){pick();renderStudy()}
